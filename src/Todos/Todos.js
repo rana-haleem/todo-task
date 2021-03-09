@@ -9,6 +9,7 @@ import {
     Link
   } from "react-router-dom";
   import profile from '../profile-user.png'
+import ViewTodo from './ViewTodo';
 function Todos() {
   return (
 
@@ -23,9 +24,13 @@ function Todos() {
                     <Route path="/create-todo">
                         <AddTodos />
                     </Route>
+                    <Route path="/view-todo">
+                        <ViewTodo />
+                    </Route>
                     <Route path="/">
                         <GetTodos />
                     </Route>
+
                 </Switch>
             </div>
             </Router>

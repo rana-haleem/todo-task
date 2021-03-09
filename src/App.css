@@ -6,11 +6,11 @@ body {
 }
 .col-1 {
     background-color: #742fc4;
-    height: 100vh;
     color: #fff;
     font-size: 19px;
+    min-height: 100vh;
 }
-.row {
+.row-t {
   background: #fff;
   border: 1px solid #f8f9fa;
   padding: 15px 10px;
@@ -24,4 +24,19 @@ body {
   max-width: 130px;
   display: block;
   text-align: left;
+}
+.row form {
+  margin-left: 30px;
+}
+form .btn-secondary {
+  margin-left: -15px;
+  border:0px;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+select {
+  padding: 5px!important;
+  background: #e6d0ff;
+  border-radius: 3px;
+  border: 1px;
 }
