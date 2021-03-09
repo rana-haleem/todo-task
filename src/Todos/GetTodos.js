@@ -1,21 +1,40 @@
 import '../App.css';
-import React from 'react';
+import React , { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import { useQuery } from '@apollo/react-hooks';
 import gql from "graphql-tag";
 import { Link } from "react-router-dom";
 const GET_TEST_INFO = gql`
 {
   todos {
+    id
     title
     description
     status
     priority
   }
 }`
+const UPDATE_TODO = gql`
+  mutation UpdateStatus($id: Int, $status: String!) {
+    updateStatus(id: $id, status: $status) {
+      id
+      status
+    }
+  }
+`;
 function GetTodos() {
   const { data, loading, error } = useQuery(GET_TEST_INFO);
+  const [updateStatus] = useMutation(UPDATE_TODO);
+  const [currentStatus, setCurrentStatus] = useState('todo')
+  const changeStatus = (e,index) => {
+      console.log("status",e);
+      console.log("id",index)
+    setCurrentStatus(e)
+    updateStatus({ variables: { id:index, status: e} });
+  }
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error..</p>;
+  
   return (
       <div>
       <h1 className="text-left mt-5 mb-5">Tasks</h1>
@@ -23,32 +42,28 @@ function GetTodos() {
           {data &&
             data.todos &&
             data.todos.map((tasks, index) => (
-              <div key={index} className="row">
+                
+              <div key={index} className="row row-t">
                 <div className="col-lg-4"> 
-                  <span>{tasks.title}</span>
+                    <Link to={{pathname: "/view-todo", state: {id: tasks.id}}}><span>{tasks.title}</span></Link>
                 </div>
                 <div className="col-lg-4"> 
-                  <div className="dropdown">
-                    <button className="btn btn-info dropdown-toggle" type="button" id="status" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Done
-                    </button>
-                    <div className="dropdown-menu" aria-labelledby="status">
-                      <a className="dropdown-item" href="#">Work in Progress</a>
-                      {/* <a className="dropdown-item" href="#">Done</a> */}
-                    </div>
-                  </div>
+                    <select
+                        onChange={(event) => changeStatus(event.target.value,tasks.id)}
+                        value={tasks.status} 
+                    >
+                        <option value="Done">Done</option>
+                        <option value="Work in Progress">Work in progress</option>
+                        <option value="Todo">Todo</option>
+                    </select>
                 </div>
                 <div className="col-lg-4"> 
-                  <div className="dropdown">
-                      <button className="btn btn-danger dropdown-toggle" type="button" id="priority" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          High
-                      </button>
-                      <div className="dropdown-menu" aria-labelledby="priority">
-                        {/* <a className="dropdown-item" href="#">High</a> */}
-                        <a className="dropdown-item" href="#">Medium</a>
-                        <a className="dropdown-item" href="#">Low</a>
-                      </div>
-                    </div>
+                    <select
+                    >
+                        <option value="high">High</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                    </select>
                 </div>
               </div>
             ))}
