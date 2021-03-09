@@ -1,6 +1,15 @@
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-
+import { useHistory } from 'react-router-dom';
+const GET_QUERY_INFO = gql`
+{
+  todos {
+    title
+    description
+    status
+    priority
+  }
+}`
 const ADD_TODO = gql`
   mutation AddTodo($title: String, $description: String, $status: String, $priority: String) {
     addTodo(title: $title, description: $description, status: $status, priority: $priority) {
@@ -16,21 +25,23 @@ function AddTodos() {
   let description;
   let status;
   let priority;
-  const [addUser, { data }] = useMutation(ADD_TODO);
-
+  const history = useHistory();
+  const [addUser, { data }] = useMutation(ADD_TODO, {
+    refetchQueries: () => [{
+        query: GET_QUERY_INFO,
+      }]
+  });
   return (
     <div>
         <form
-            onSubmit={e => {
-            e.preventDefault();
+            onSubmit={() => {
             addUser({ variables: { title: title.value , description: description.value, status: status.value, priority: priority.value} });
             title.value = '';
             description.value = '';
             status.value = '';
             priority.value = '';
-
-            }}
-        >
+            history.push('/')
+            }}>
             <label>Title</label>
             <input ref={node => { title = node; }}/>
             <label>Description</label>

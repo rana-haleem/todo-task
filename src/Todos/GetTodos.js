@@ -13,7 +13,7 @@ const GET_TEST_INFO = gql`
   }
 }`
 function GetTodos() {
-  const { data, loading, error, refetch } = useQuery(GET_TEST_INFO);
+  const { data, loading, error } = useQuery(GET_TEST_INFO);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error..</p>;
   return (
